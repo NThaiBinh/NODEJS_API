@@ -3,7 +3,6 @@ const { createCourse, getCourse, getAllCourses } = require('../services/coursesS
 async function createCourseHandler(req, res) {
     const { idCourse, nameCourse, priceCourse, descriptionCourse } = req.body
     const courseExits = await getCourse(idCourse)
-    console.log(courseExits)
     if(courseExits) {
         return res.status(200).json({
             message: 'Course is exits'
@@ -31,7 +30,21 @@ async function getAllCourseHandler(req, res) {
     })
 }
 
+function updateCourseHandler(req, res) {
+    res.status(200).json({
+        message: 'update'
+    })
+}
+
+function deleteCourseHandler(req, res) {
+    res.status(200).json({
+        message: 'delete'
+    })
+}
+
 module.exports = {
     createCourseHandler,
-    getAllCourseHandler
+    getAllCourseHandler,
+    updateCourseHandler,
+    deleteCourseHandler
 }
