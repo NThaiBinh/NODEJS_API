@@ -13,9 +13,6 @@ function createCourse(data) {
                 .input('description', sql.TYPES.NVarChar, descriptionCourse)
                 .query(`INSERT INTO COURSES (${columns}) VALUES (@id, @name, @price, @description)`)
         })
-        .catch(err => {
-            console.log('>>>ERROR--------->', err)
-        })
 }
 
 function getCourse(idCourse) {
@@ -25,11 +22,8 @@ function getCourse(idCourse) {
             .input('idCourse', sql.TYPES.VarChar, idCourse)
             .query(`SELECT * FROM COURSES WHERE ID = @idCourse`) 
         })
-        .then(user => {
-            return user.recordset[0]
-        })
-        .catch(err => {
-            console.log('>>>ERROR--------->', err)
+        .then(course => {
+            return course.recordset[0]
         })
 }
 
@@ -38,16 +32,38 @@ function getAllCourses() {
         .then(pool => {
             return pool.request().query(`SELECT * FROM COURSES`)
         })
-        .then(persons => {
-            return persons.recordset[0]
+        .then(courses => {
+            return courses.recordset
         })
-        .catch(err => {
-            console.log('>>>ERROR--------->', err)
+}
+
+function updateCourse(data) {
+    const columns = ['id', 'name', 'price', 'description']
+    const { idCourse, nameCourse, priceCourse, descriptionCourse } = data
+    return connectionPool
+        .then(pool => {
+            return pool.request()
+                .input('id', sql.TYPES.VarChar, idCourse)
+                .input('name', sql.TYPES.NVarChar, nameCourse)
+                .input('price', sql.TYPES.Float, priceCourse)
+                .input('description', sql.TYPES.NVarChar, descriptionCourse)
+                .query(`UPDATE COURSES SET ${columns[1]} = @name, ${columns[2]} = @price, ${columns[3]} = @description WHERE ${columns[0]} = @id`)
+        })
+}
+
+function deleteCourse(idCourse) {
+    return connectionPool
+        .then(pool => {
+            return pool.request()
+                .input('idCourse', sql.TYPES.VarChar, idCourse)
+                .query(`DELETE Courses WHERE id = @idCourse`)
         })
 }
 
 module.exports = {
     createCourse,
     getCourse,
-    getAllCourses
+    getAllCourses,
+    updateCourse,
+    deleteCourse
 }

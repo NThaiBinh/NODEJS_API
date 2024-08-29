@@ -5,8 +5,8 @@ const routerCourse = require('../routes/courseRouter')
 const userRouter = require('../routes/userRouter')
 
 routerAPI.all('*', auth);
-routerAPI.use('/course', routerCourse)
-routerAPI.use('/user', userRouter)
+routerAPI.use('/courses', routerCourse)
+routerAPI.use('/users', userRouter)
 
 
 module.exports = routerAPI

@@ -5,7 +5,7 @@ const routerCourse = express.Router()
 
 routerCourse.get('/', getAllCourseHandler)
 routerCourse.post('/create', createCourseHandler)
-routerCourse.put('/update/:id', updateCourseHandler)
+routerCourse.put('/update', updateCourseHandler)
 routerCourse.delete('/delete/:id', deleteCourseHandler)
 
 

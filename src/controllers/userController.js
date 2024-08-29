@@ -3,6 +3,7 @@ const { createUser, getUser, getAllUsers, login } = require('../services/userSer
 async function createUserHandler(req, res) {
     const { userName, password, role } = req.body
     const userExits = await getUser(userName)
+    console.log(userName)
     if(userExits) {
         return res.status(200).json({
             message: 'User is exits'

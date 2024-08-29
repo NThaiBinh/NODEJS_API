@@ -30,7 +30,7 @@ function getUser(userName) {
         .then(pool => {
             return pool.request()
             .input('userName', sql.TYPES.VarChar, userName)
-            .query(`SELECT * FROM USERS WHERE userName = @userName`) 
+            .query(`SELECT * FROM Users WHERE userName = @userName`) 
         })
         .then(user => {
             return user.recordset[0]
