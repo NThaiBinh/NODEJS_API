@@ -1,56 +1,76 @@
 require('dotenv').config()
-const sql = require('mssql')
-const connectionPool = require('../config/database.js')
 const jwt = require('jsonwebtoken')
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
+const bcrypt = require('bcrypt')
+const saltRounds = 10
+const db = require('../models/index')
 
 async function createUser(data) {
-    const columns = ['userName', 'password', 'role']
+    //ORM
     const { userName, password, role } = data
     const hashPassword = await bcrypt.hash(password, saltRounds)
-        .catch(err => {
-            console.log('ERROR----------->', err)
-        })
-    connectionPool
-        .then(pool => {
-            return pool.request()
-                .input('userName', sql.TYPES.VarChar, userName)
-                .input('password', sql.TYPES.VarChar, hashPassword)
-                .input('role', sql.TYPES.VarChar, role)
-                .query(`INSERT INTO USERS (${columns}) VALUES (@userName, @password, @role)`)
-        })
-        .catch(err => {
-            console.log('>>>ERROR--------->', err)
-        })
+    await db.User.create({
+        userName: userName,
+        password: hashPassword,
+        role: role
+    })
 }
 
-function getUser(userName) {
-    return connectionPool
-        .then(pool => {
-            return pool.request()
-            .input('userName', sql.TYPES.VarChar, userName)
-            .query(`SELECT * FROM Users WHERE userName = @userName`) 
-        })
-        .then(user => {
-            return user.recordset[0]
-        })
-        .catch(err => {
-            console.log('>>>ERROR--------->', err)
-        })
+async function getUser(userName) {
+    //ORM
+    const user = await db.User.findByPk(userName)
+    if(user) {
+        return user.get({plain: true})
+    }
+    else {
+        return undefined
+    }
+    // return connectionPool
+    //     .then(pool => {
+    //         return pool.request()
+    //         .input('userName', sql.TYPES.VarChar, userName)
+    //         .query(`SELECT * FROM Users WHERE userName = @userName`) 
+    //     })
+    //     .then(user => {
+    //         return user.recordset[0]
+    //     })
 }
 
-function getAllUsers() {
-    return connectionPool
-        .then(pool => {
-            return pool.request().query(`SELECT * FROM USERS`)
-        })
-        .then(persons => {
-            return persons.recordset[0]
-        })
-        .catch(err => {
-            console.log('>>>ERROR--------->', err)
-        })
+async function getAllUsers() {
+    //ORM
+    return await db.User.findAll()
+
+    // return connectionPool
+    //     .then(pool => {
+    //         return pool.request().query(`SELECT * FROM USERS`)
+    //     })
+    //     .then(persons => {
+    //         return persons.recordset[0]
+    //     })
+}
+
+async function  updateUser(data) {
+    const { userName, password, role } = data
+    db.User.update(
+        {
+            userName,
+            password,
+            role
+        },
+        {
+            where: 
+            {
+                userName
+            }
+        }
+    )
+}
+
+async function deleteUser(userName) {
+    await db.User.destroy({
+        where: {
+            userName
+        }
+    })
 }
 
 async function login(userName, password) {
@@ -81,12 +101,6 @@ async function login(userName, password) {
                 }
             }
         })
-        .catch(err => {
-            console.log('>>>ERROR--------->', err)
-            return {
-                message: 'Error'
-            }
-        })
     }
     else {
         return {
@@ -99,5 +113,7 @@ module.exports = {
     createUser,
     getUser,
     getAllUsers,
+    updateUser,
+    deleteUser,
     login
 }

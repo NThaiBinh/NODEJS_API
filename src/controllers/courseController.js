@@ -1,20 +1,11 @@
 const { createCourse, getCourse, getAllCourses, updateCourse, deleteCourse } = require('../services/coursesServices')
 
 async function createCourseHandler(req, res) {
-    const { idCourse, nameCourse, priceCourse, descriptionCourse } = req.body
-    if(idCourse && nameCourse && priceCourse && descriptionCourse) {
+    const { name, price, description } = req.body
+    if(name && price && description) {
         try {
-            const courseExits = await getCourse(idCourse)
-            if(courseExits) {
-                return res.status(200).json({
-                    message: 'Course already exits'
-                })
-            }
             await createCourse(req.body)
-            return res.status(201).json({
-                message: 'Create success',
-                data: req.body
-            })
+            return res.status(201).json(req.body)
         }
         catch(err) {
             return res.status(200).json({
@@ -32,27 +23,21 @@ async function createCourseHandler(req, res) {
 async function getAllCourseHandler(req, res) {
     try {
         const courses = await getAllCourses();
-        return res.status(200).json({
-            message: 'ok',
-            data: courses
-        })
+        return res.status(200).json(courses)
     }
     catch(err) {
-        return res.status(200).json({
+        return res.status(500).json({
             message: 'Error'
         })
     }
 }
 
 async function updateCourseHandler(req, res) {
-    const { idCourse, nameCourse, priceCourse, descriptionCourse } = req.body
-    if(idCourse && nameCourse && priceCourse && descriptionCourse) {
+    const {name, price, description } = req.body
+    if(name && price && description) {
         try {
             await updateCourse(req.body)
-            return res.status(200).json({
-                message: 'Update success',
-                data: req.body
-            })
+            return res.status(200).json(req.body)
         }
         catch(err) {
             return res.status(200).json({

@@ -1,0 +1,33 @@
+{
+  "development": {
+    "username": "sa",
+    "password": "QQQQ@1111",
+    "database": "NODEJS_EXPRESS_DB",
+    "host": "127.0.0.1",
+    "dialect": "mssql",
+    "options": {
+      "encrypt": false,
+      "trustServerCertificate": true
+    },
+    "pool": {
+      "max": 5,
+      "min": 0,
+      "acquire": 30000,
+      "idle": 10000
+    }
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "database_production",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}

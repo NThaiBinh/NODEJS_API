@@ -1,10 +1,10 @@
 const express = require('express')
-const auth = require('../middleware/auth')
+const authentication = require('../middleware/authentication')
 const routerAPI = express.Router()
 const routerCourse = require('../routes/courseRouter')
 const userRouter = require('../routes/userRouter')
 
-routerAPI.all('*', auth);
+routerAPI.all('*', authentication);
 routerAPI.use('/courses', routerCourse)
 routerAPI.use('/users', userRouter)
 

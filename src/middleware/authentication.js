@@ -2,8 +2,8 @@ require('dotenv').config()
 const jwt = require('jsonwebtoken')
 
 
-function auth(req, res, next) {
-    const whiteLists = ['/user/login', '/user/register']
+function authentication(req, res, next) {
+    const whiteLists = ['/users/login', '/users/register']
     if(whiteLists.find(item => '/api/v1' + item === req.originalUrl)) {
         next()
     }
@@ -16,17 +16,17 @@ function auth(req, res, next) {
             }
             catch(err) {
                 res.status(401).json({
-                    messagee: 'Bạn chưa có Access Token hoặc Access Token của bạn hết hạn'
+                    messagee: 'Unauthorized'
                 })
             }
         }
         else {
             res.status(401).json({
-                messagee: 'Bạn chưa có Access Token hoặc Access Token của bạn hết hạn'
+                messagee: 'Unauthorized'
             })
         }
     }
     
 }
 
-module.exports = auth
+module.exports = authentication
